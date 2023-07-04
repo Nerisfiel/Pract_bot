@@ -73,15 +73,11 @@ def select_rnd(mci):
     sqlite_insert_query = """SELECT test_id FROM test_res WHERE id = """+str(mci)+""";"""
     txt = cursor.execute(sqlite_insert_query)
     abc = txt.fetchall()
-    print(abc)
-    if abc is None:
-        abc = [0,0,0]
+    if abc == []:
+        return random.randint(1, 2)
     con.close()
     while i < 100:
-        r = random.randint(1, len(abc))
-        print(r)
-        print(abc)
-        print('----')
+        r = random.randint(1, 2)
         for j in range(0,len(abc)):
             if r == abc[j][0]:
                 r = 0
