@@ -9,12 +9,27 @@ JenPt_bot = telebot.TeleBot('6389247381:AAHYJiB9zYeRLW_3rfauO3btQhetykMqzw0')
 def start(message):
     JenPt_bot.send_message(message.chat.id, "Привет :3")
 
+@JenPt_bot.message_handler(commands=['res'])
+def res(message):
+    con = sqlite3.connect("JDB.db")
+    cursor = con.cursor()
+    sqlite_insert_query = """SELECT res FROM test_res WHERE id = """ + str(message.chat.id) + """ and res not in (-1)"""
+    txt = cursor.execute(sqlite_insert_query)
+    txt = txt.fetchone()
+    ans = 0
+    con.close()
+    if txt is None:
+        ans = 'А вы ничего и не сделали'
+    for i in range(0,len(txt)):
+        ans = ans + txt[i]
+    ans = ans /(len(txt)+1)
+    JenPt_bot.send_message(message.chat.id, ans)
 
 
 @JenPt_bot.message_handler(commands=['test'])
 def test(message):
     t_id = test_id(message.chat.id)
-    if t_id[0] != 0:
+    if t_id != 0:
         JenPt_bot.send_message(message.chat.id, 'У вас уже есть задание')
     else:
         keyboard = types.InlineKeyboardMarkup();
@@ -36,7 +51,7 @@ def callback_worker(call):
 @JenPt_bot.message_handler(content_types=['text'])
 def check(message):
     t_id = test_id(message.chat.id)
-    if t_id[0] == 0:
+    if t_id == 0:
         JenPt_bot.send_message(message.chat.id, 'Возмите задание с помошью /test')
     else:
         test_cases = test_c(t_id)
@@ -106,15 +121,10 @@ def test_id(mci):
 
 def test_c(t_id):
     con = sqlite3.connect("JDB.db")
-    print(2)
     cursor = con.cursor()
-    print(3)
     sqlite_insert_query = """SELECT res1,res2,res3,res4,res5 FROM tests WHERE id = """ + str(t_id[0]) + """"""
-    print(sqlite_insert_query)
     txt = cursor.execute(sqlite_insert_query)
-    print(4)
     txt = txt.fetchone()
-    print(txt)
     return [(2,3,txt[0]),(6,-2,txt[1]),(889,2345,txt[2]),(73456,23454,txt[3]),(23644,86563,txt[4])]
 
 
