@@ -10,16 +10,8 @@ class TaskChecker:
 
     def check(self):
         function_name = re.findall(r'def\s+(\w+)\s*\(',self.solution)[0]
-        regex = re.compile('\n')
-        self.solution = regex.sub('ttt', self.solution)
-        regex = re.compile('\s')
-        self.solution = regex.sub('', self.solution)
-        regex = re.compile('ttt')
+        regex = re.compile('\n *')
         self.solution = regex.sub('\n    ',self.solution)
-        regex = re.compile('def')
-        self.solution = regex.sub('def ', self.solution)
-        regex = re.compile('return')
-        self.solution = regex.sub('return ', self.solution)
         print(self.solution)
         exec(self.solution, globals())
         func = globals()[function_name]
